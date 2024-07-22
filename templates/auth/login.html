@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+
+
+<div class="container">
+    
+    <div class="row">
+
+        <div class="col-12 offset-md-4 col-md-4">
+            <section class="container my-5 p-3 border rounded shadow">
+                <div class="py-1 mb-3">
+                    <h3 class="text-center text-primary">Sign In</h3>
+                </div>
+                <form method="post"  action="#">
+                    {% csrf_token %}
+
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="{{form.login.id_for_label}}" name="{{form.login.name}}" placeholder="Username" autocomplete="off" autofocus>
+                        <label for="{{form.username.id_for_label}}">Username</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="{{form.password.id_for_label}}" name="{{form.password.name}}" placeholder="Password" autocomplete="off">
+                        <label for="{{form.password.id_for_label}}">Password</label>
+                    </div>
+                    <div class="">
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </div> 
+                  </form>
+            </section>
+        </div>
+
+    </div> 
+
+
+</div>
+
+
+{% endblock body %}
+
+
+
+
+
+
+
+
+
+
+
+

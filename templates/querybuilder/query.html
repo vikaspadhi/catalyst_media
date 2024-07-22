@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+
+<div class="container">
+
+
+    <div id="result_div" class="bg-success rounded p-4 my-3 d-flex d-none">
+        <p><strong id="count"></strong> records found for the query.</p>
+        <button type="button" class="ms-auto btn-close" id="btn-close"></button>
+        
+      </div> 
+
+
+
+    <div class="py-1 my-3">
+        <h3 class="text-primary">Query Builder</h3>
+    </div>
+
+    <form enctype="multipart/form-data" method="Post" action="#" id="filterForm">
+        {% csrf_token %}
+        <div class="row">
+
+        <div class="col-12 col-md-4 p-2">
+            <label for={{form.keyword.id_for_label}} class="form-label mt-4">{{form.keyword.label}}:</label>
+            <input type="text" name="{{form.keyword.name}}" id="{{form.keyword.id_for_label}}" class="form-control" placeholder="Keyword">
+        </div>
+        <div class="col-12 col-md-4 p-2">
+        
+            <label for={{form.industry.id_for_label}} class="form-label mt-4">{{form.industry.label}}:</label>
+            <select class="form-select" id={{form.industry.id_for_label}} name = {{form.industry.name}}>
+                {% for industry_value , industry_lable in form.industry.field.choices%}
+                <option value="{{industry_value}}" 
+                {% if industry_value == form.industry.value %}selected{% endif %}>
+                {{ industry_lable }}
+              </option>
+                {% endfor %} 
+              </select>
+            
+        </div>
+        <div class="col-12 col-md-4 p-2">
+        
+            <label for={{form.year_founded.id_for_label}} class="form-label mt-4">{{form.year_founded.label}}:</label>
+            <select class="form-select" id={{form.year_founded.id_for_label}} name = {{form.year_founded.name}}>
+                {% for year_founded_value , year_founded_lable in form.year_founded.field.choices%}
+                <option value="{{year_founded_value}}" 
+                {% if year_founded_value == form.year_founded.value %}selected{% endif %}>
+                {{ year_founded_lable }}
+              </option>
+                {% endfor %} 
+              </select>
+            
+
+        </div>
+
+        <div class="col-12 col-md-4 p-2">
+            <label for={{form.locality.id_for_label}} class="form-label mt-4">{{form.locality.label}}:</label>
+            <select class="form-select" id={{form.locality.id_for_label}} name = {{form.locality.name}}>
+                {% for locality_value , locality_lable in form.locality.field.choices%}
+                <option value="{{locality_value}}" 
+                {% if locality_value == form.locality.value %}selected{% endif %}>
+                {{ locality_lable }}
+              </option>
+                {% endfor %} 
+              </select>
+            
+        </div>
+
+        
+
+        <div class="col-12 col-md-4 p-2">
+            <label for={{form.country.id_for_label}} class="form-label mt-4">{{form.country.label}}:</label>
+            <select class="form-select" id={{form.country.id_for_label}} name = {{form.country.name}}>
+                {% for country_value , country_lable in form.country.field.choices%}
+                <option value="{{country_value}}" 
+                {% if country_value == form.country.value %}selected{% endif %}>
+                {{ country_lable }}
+              </option>
+                {% endfor %} 
+              </select>
+        </div>
+
+        </div>
+    
+    <div class="row">
+
+        <div class="col-12 col-md-4 p-2">
+            <button type="submit" class="btn btn-primary px-5">Query Data</button>
+            <button type="button" class="btn btn-secondary px-5" id="reset_query_form">Rest</button>
+        </div>
+
+    </div>
+
+</form> 
+
+
+
+
+</div>
+
+
+
+
+{% endblock body %}
+
+
+{% block script %}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  const csrftoken = getCookie('csrftoken');
+
+  document.getElementById('filterForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const formData = $('#filterForm').serialize(); // Serialize form data
+          $.ajax({
+              type: 'POST',
+              dataType:'json',
+              url: '{% url "filter" %}',  
+              data: formData,
+              headers: {
+                  'X-CSRFToken': csrftoken, // Add CSRF token to the request
+              },
+              success: function(response) {
+                {% comment %} console.log(response) {% endcomment %}
+                document.getElementById('result_div').classList.remove("d-none")
+                document.getElementById('count').innerText = response.count;
+              },
+              error: function(xhr, status, error) {
+                  console.error('Error:', xhr.responseText);
+                  {% comment %} alert('An error occurred while processing the request.'); {% endcomment %}
+              }
+          }); 
+       
+
+  });
+
+
+  document.getElementById("btn-close").addEventListener('click',function(e){
+    document.getElementById('result_div').classList.add("d-none")
+  });
+
+  document.getElementById("reset_query_form").addEventListener('click',function(e){
+    document.getElementById('filterForm').reset();
+  });
+
+  
+
+
+
+{% endblock script %}

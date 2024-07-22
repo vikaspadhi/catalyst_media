@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+
+
+<div class="container">
+
+    {%if custom_message%}
+    <div class="alert alert-dismissible alert-success my-3">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        {{custom_message}}
+      </div>
+      {%endif%}
+
+    <div class="py-1 my-3 d-flex">
+        <h3 class="text-primary">Users</h3>
+        <a href="{% url 'adduser' %}" class="ms-auto">
+          <button class="btn btn-primary ms-auto px-4">Add User</button>
+        </a>
+    </div>
+
+    <table class="table">
+        <thead>
+          <tr>                    
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Active</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%for user in users%}
+          <tr>
+            <td>{{user.username}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.is_active}}</td>
+          </tr>               
+          {%endfor%}  
+        </tbody>
+      </table>
+
+</div>
+
+{% endblock body %}
+
+
+
+
+
+
+
+
+
+
+
+
